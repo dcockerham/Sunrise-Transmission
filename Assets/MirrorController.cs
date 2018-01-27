@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MirrorController : MonoBehaviour {
+public class MirrorController : Obstacle {
 	public float rotateSpeed = 30.0f;
 	public float speed = 15.0f;
 	private bool selected;
 	private bool shineOn;
 	private bool mouseOn;
+
+	public float xRange;
+	public float yRange;
 
 	public float range;  //for both x & y;
 	private float x;
@@ -17,14 +20,13 @@ public class MirrorController : MonoBehaviour {
 	void Start () {
 		selected = false;
 		shineOn = false;
-		range = 5.0f;
-		this.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 122f);
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (shineOn) {
-			this.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 255f);
+			this.GetComponent<SpriteRenderer> ().color = new Color (255f, 255f, 255f, 255f);
 		}
 		x = transform.position.x;
 		y = transform.position.y;
@@ -85,6 +87,8 @@ public class MirrorController : MonoBehaviour {
 		mouseOn = false;
 		Debug.Log ("Mouse now Exit");
 	}
+
+
 
 
 }
