@@ -41,8 +41,6 @@ public class MirrorController : Obstacle {
 		lightsActive = alwaysOn;
 		float x = transform.position.x;
 		float y = transform.position.y;
-		Debug.Log ("x: " + x);
-		Debug.Log ("y: " + y);
 
 		if (selected) {
 			if (-range.x < (x - startPosition.x)) {
@@ -102,14 +100,14 @@ public class MirrorController : Obstacle {
 		mouseOn = true;
 		if(!selected)
 			transform.localScale *= 1.2f;
-		Debug.Log ("Mouse now Enter");
+		//Debug.Log ("Mouse now Enter");
 	}
 
 	void OnMouseExit(){
 		if(!selected)
 			transform.localScale *= 1f/1.2f;
 		mouseOn = false;
-		Debug.Log ("Mouse now Exit");
+		//Debug.Log ("Mouse now Exit");
 	}
 
 	public override void HitByLight(Vector3 lightOrigin)

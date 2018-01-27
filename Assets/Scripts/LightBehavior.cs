@@ -26,7 +26,8 @@ public class LightBehavior : MonoBehaviour {
 		// figure out current location and angle
 		Vector3 beamDir = !useReflection ? (Quaternion.Euler(angleOffset) * lightSource.transform.up).normalized : reflectionAngle;
 		Vector3 firstPoint = lightSource.transform.position; //might get rid of this Vector3, just get it from lineRenderer
-		Vector3 lastPoint = lightSource.transform.position + beamDir * beamLength;
+		//Vector3 lastPoint = lightSource.transform.position + beamDir * beamLength;
+		float cutoffDist = beamLength;
 
 		// check collisions with all obstacles
 		List<Obstacle> collisionList = new List<Obstacle>();
@@ -39,16 +40,21 @@ public class LightBehavior : MonoBehaviour {
 			{
 				Vector3 lineProj = firstPoint + dotProduct * beamDir;
 				float distFromBeam = (lineProj - Obstacle.obstacleList [i].transform.position).magnitude;
-				if (distFromBeam <= beamWidth && obsVec.magnitude <= beamLength) //later, add in obstacle radius as well
+				if (distFromBeam <= beamWidth && obsVec.magnitude <= cutoffDist) //later, add in obstacle radius as well
 				{
 					// it's a hit! add it to the list
 					collisionList.Add (Obstacle.obstacleList [i]);
 					distList.Add (obsVec.magnitude);
+
+					if (Obstacle.obstacleList [i].blockLight) 
+					{
+						cutoffDist = obsVec.magnitude;
+					}
 				}
 			}
 		}
 
-		Obstacle closestCollision = null;
+		/*Obstacle closestCollision = null;
 		float closestDist = beamLength;
 		for (int i = 0; i < collisionList.Count; i++) 
 		{
@@ -64,9 +70,25 @@ public class LightBehavior : MonoBehaviour {
 			// perform hit calcs
 			lastPoint = lightSource.transform.position + beamDir * closestDist;
 			closestCollision.HitByLight (firstPoint);
+		}*/
+
+		for (int i = 0; i < collisionList.Count; i++) 
+		{
+			if (distList [i] <= cutoffDist) 
+			{
+				collisionList[i].HitByLight (firstPoint);
+			}
 		}
 
-		lightBeam.SetPosition (0, firstPoint);
-		lightBeam.SetPosition (1, lastPoint);
+		//lastPoint = lightSource.transform.position + beamDir * cutoffDist;
+		//lightBeam.SetPosition (0, firstPoint);
+		//lightBeam.SetPosition (1, lastPoint);
+
+		Vector3[] beamPositions = new Vector3[30];
+		for (int i = 0; i < beamPositions.Length; i++) {
+			beamPositions[i] = lightSource.transform.position + beamDir * cutoffDist * ((float)i/beamPositions.Length);
+		}
+		lightBeam.positionCount = beamPositions.Length;
+		lightBeam.SetPositions (beamPositions);
 	}
 }

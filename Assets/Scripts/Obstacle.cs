@@ -5,6 +5,7 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour {
 
 	public static List<Obstacle> obstacleList = new List<Obstacle>();
+	public bool blockLight = true;
 
 	public virtual void Start () 
 	{
