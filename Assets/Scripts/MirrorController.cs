@@ -132,4 +132,10 @@ public class MirrorController : Obstacle {
 			}
 		}
 	}
+
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.gameObject.tag == "lightBeam") {
+			Debug.Log ("touches lightbeam");
+		}
+	}
 }
