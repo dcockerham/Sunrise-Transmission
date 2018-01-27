@@ -5,7 +5,6 @@ using UnityEngine;
 public class LightBehavior : MonoBehaviour {
 
 	public GameObject lightSource;
-	public List<GameObject> obstacles; //this won't exist later, it'll be a static array in another class
 	public Vector3 angleOffset;
 	public LineRenderer lightBeam;
 
@@ -30,26 +29,26 @@ public class LightBehavior : MonoBehaviour {
 		Vector3 lastPoint = lightSource.transform.position + beamDir * beamLength;
 
 		// check collisions with all obstacles
-		List<GameObject> collisionList = new List<GameObject>();
+		List<Obstacle> collisionList = new List<Obstacle>();
 		List<float> distList = new List<float> ();
-		for (int i = 0; i < obstacles.Count; i++) 
+		for (int i = 0; i < Obstacle.obstacleList.Count; i++) 
 		{
-			Vector3 obsVec = obstacles [i].transform.position - firstPoint;
+			Vector3 obsVec = Obstacle.obstacleList [i].transform.position - firstPoint;
 			float dotProduct = Vector3.Dot (obsVec, beamDir);
 			if (dotProduct > 0) 
 			{
 				Vector3 lineProj = firstPoint + dotProduct * beamDir;
-				float distFromBeam = (lineProj - obstacles [i].transform.position).magnitude;
+				float distFromBeam = (lineProj - Obstacle.obstacleList [i].transform.position).magnitude;
 				if (distFromBeam <= beamWidth && obsVec.magnitude <= beamLength) //later, add in obstacle radius as well
 				{
 					// it's a hit! add it to the list
-					collisionList.Add (obstacles [i]);
+					collisionList.Add (Obstacle.obstacleList [i]);
 					distList.Add (obsVec.magnitude);
 				}
 			}
 		}
 
-		GameObject closestCollision = null;
+		Obstacle closestCollision = null;
 		float closestDist = beamLength;
 		for (int i = 0; i < collisionList.Count; i++) 
 		{
@@ -64,11 +63,7 @@ public class LightBehavior : MonoBehaviour {
 		{
 			// perform hit calcs
 			lastPoint = lightSource.transform.position + beamDir * closestDist;
-			MirrorBehavior closestMirror = closestCollision.GetComponent<MirrorBehavior> ();
-			if (closestMirror) 
-			{
-				closestMirror.HitByLight (firstPoint);
-			}
+			closestCollision.HitByLight (firstPoint);
 		}
 
 		lightBeam.SetPosition (0, firstPoint);
