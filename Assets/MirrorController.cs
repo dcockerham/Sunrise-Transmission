@@ -57,25 +57,27 @@ public class MirrorController : MonoBehaviour {
 
 
 		//activate & deactive selected boolean;
-		if (mouseOn == true && Input.GetMouseButton(0)) {
+		if (mouseOn == true && Input.GetMouseButton(0) && selected == false) {
 			selected = true;
-			transform.localScale = new Vector3 (2.0f, 12.0f, 2.0f);
+			transform.localScale *= 2;
 		}
 
-		if (mouseOn == false && Input.GetMouseButton (0)) {
+		if (mouseOn == false && Input.GetMouseButton(0) && selected == false) {
 			selected = false;
-			transform.localScale = new Vector3 (1.0f, 6.0f, 1.0f);
+			transform.localScale *= 0.5;
 		}
 	}
 
 	void OnMouseEnter(){
 		mouseOn = true;
-		//transform.localScale = new Vector3 (1.2f, 7.2f, 1.2f);
+		if(!selected)
+			transform.localScale = new Vector3 (1.2f, 7.2f, 1.2f);
 		Debug.Log ("Mouse now Enter");
 	}
 
 	void OnMouseExit(){
-		//transform.localScale = new Vector3 (1.0f, 6.0f, 1.0f);
+		if(!selected)
+			transform.localScale = new Vector3 (1.0f, 6.0f, 1.0f);
 		mouseOn = false;
 		Debug.Log ("Mouse now Exit");
 	}
