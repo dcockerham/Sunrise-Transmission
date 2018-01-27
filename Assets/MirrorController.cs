@@ -18,10 +18,14 @@ public class MirrorController : MonoBehaviour {
 		selected = false;
 		shineOn = false;
 		range = 5.0f;
+		this.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 122f);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (shineOn) {
+			this.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 255f);
+		}
 		x = transform.position.x;
 		y = transform.position.y;
 		Debug.Log ("x: " + x);
@@ -59,25 +63,25 @@ public class MirrorController : MonoBehaviour {
 		//activate & deactive selected boolean;
 		if (mouseOn == true && Input.GetMouseButton(0) && selected == false) {
 			selected = true;
-			transform.localScale *= 2;
+			transform.localScale *= 2.0f;
 		}
 
-		if (mouseOn == false && Input.GetMouseButton(0) && selected == false) {
+		if (mouseOn == false && Input.GetMouseButton(0) && selected == true) {
 			selected = false;
-			transform.localScale *= 0.5;
+			transform.localScale *= 0.5f;
 		}
 	}
 
 	void OnMouseEnter(){
 		mouseOn = true;
 		if(!selected)
-			transform.localScale = new Vector3 (1.2f, 7.2f, 1.2f);
+			transform.localScale *= 1.2f;
 		Debug.Log ("Mouse now Enter");
 	}
 
 	void OnMouseExit(){
 		if(!selected)
-			transform.localScale = new Vector3 (1.0f, 6.0f, 1.0f);
+			transform.localScale *= 1f/1.2f;
 		mouseOn = false;
 		Debug.Log ("Mouse now Exit");
 	}
