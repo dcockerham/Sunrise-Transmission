@@ -9,12 +9,12 @@ public class MirrorController : Obstacle {
 	private bool shineOn;
 	private bool mouseOn;
 
-	public float xRange;
+	public float xRange;  //for both x & y;
 	public float yRange;
 
-	public float range;  //for both x & y;
 	private float x;
 	private float y;
+
 	private float startX;
 	private float startY;
 
@@ -23,36 +23,34 @@ public class MirrorController : Obstacle {
 		selected = false;
 		shineOn = false;
 
-		xRange += range;
-		yRange += range;
-
+		startX = transform.position.x;
+		startY = transform.position.y;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		x = transform.position.x;
+		y = transform.position.y;
+
 		if (shineOn) {
 			this.GetComponent<SpriteRenderer> ().color = new Color (255f, 255f, 255f, 255f);
 		}
-		x = transform.position.x;
-		y = transform.position.y;
-		Debug.Log ("x: " + x);
-		Debug.Log ("y: " + y);
 
 		if (selected) {
-			if (-range < x) {
+			if (startX-xRange < x) {
 				//translate; up down left right
 				if (Input.GetKey (KeyCode.LeftArrow)) 
 					transform.position += new Vector3 (-0.2f * speed * Time.deltaTime, 0.0f, 0.0f);
 			}
-			if (x < range) {
+			if (x < startX+xRange) {
 				if (Input.GetKey (KeyCode.RightArrow)) 
 					transform.position += new Vector3 (0.2f * speed * Time.deltaTime, 0.0f, 0.0f);
 			}
-			if (-range < y) {
+			if (startY-yRange < y) {
 				if (Input.GetKey (KeyCode.DownArrow))
 					transform.position += new Vector3 (0.0f, -0.2f * speed * Time.deltaTime, 0.0f);
 			}
-			if (y < range) {
+			if (y < startY+yRange) {
 				if (Input.GetKey (KeyCode.UpArrow)) 
 					transform.position += new Vector3 (0.0f, 0.2f * speed * Time.deltaTime, 0.0f);
 			}
@@ -93,7 +91,11 @@ public class MirrorController : Obstacle {
 		Debug.Log ("Mouse now Exit");
 	}
 
-
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.gameObject.tag == "lightBeam") {
+			Debug.Log ("touches lightbeam");
+		}
+	}
 
 
 }
