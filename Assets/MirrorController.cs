@@ -15,11 +15,16 @@ public class MirrorController : Obstacle {
 	public float range;  //for both x & y;
 	private float x;
 	private float y;
+	private float startX;
+	private float startY;
 
 	// Use this for initialization
 	void Start () {
 		selected = false;
 		shineOn = false;
+
+		xRange += range;
+		yRange += range;
 
 	}
 	
