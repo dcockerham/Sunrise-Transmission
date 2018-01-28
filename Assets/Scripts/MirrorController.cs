@@ -145,7 +145,7 @@ public class MirrorController : Obstacle {
 		//Debug.Log ("Mouse now Exit");
 	}
 
-	public override void HitByLight(Vector3 lightOrigin)
+	public override void HitByLight(Vector3 lightOrigin, Vector3 lightEnd)
 	{
 		Vector3 lightVec = transform.position - lightOrigin;
 		float angleBetween = Vector3.SignedAngle (lightVec.normalized, transformTarget.up, Vector3.up);

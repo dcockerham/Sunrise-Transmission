@@ -17,7 +17,7 @@ public class Obstacle : MonoBehaviour {
 		obstacleList.Remove (this);
 	}
 
-	public virtual void HitByLight (Vector3 lightOrigin)
+	public virtual void HitByLight(Vector3 lightOrigin, Vector3 lightEnd)
 	{
 		
 	}

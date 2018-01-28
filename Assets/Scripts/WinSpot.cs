@@ -10,7 +10,7 @@ public class WinSpot : Obstacle {
 
 	bool checkForWin = false;
 
-	public override void HitByLight (Vector3 lightOrigin)
+	public override void HitByLight(Vector3 lightOrigin, Vector3 lightEnd)
 	{
 		checkForWin = true;
 	}

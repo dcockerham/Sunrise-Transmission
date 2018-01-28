@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LightBehavior : MonoBehaviour {
 
-	public GameObject lightSource;
+	public MirrorController lightSource;
 	public Vector3 angleOffset;
 	public LineRenderer lightBeam;
 
@@ -14,8 +14,12 @@ public class LightBehavior : MonoBehaviour {
 	public float beamLength;
 	public float beamWidth; //get rid of this later, just get it from the lineRenderer
 
+	protected ParticleSystem partSys;
+
 	void Start () 
 	{
+		lightSource = transform.parent.gameObject.GetComponent<MirrorController> ();
+		partSys = GetComponentInChildren<ParticleSystem> ();
 		lightBeam = GetComponent<LineRenderer> ();
 		lightBeam.widthMultiplier = beamWidth;
 	}
@@ -26,7 +30,6 @@ public class LightBehavior : MonoBehaviour {
 		// figure out current location and angle
 		Vector3 beamDir = !useReflection ? (Quaternion.Euler(angleOffset) * lightSource.transform.up).normalized : reflectionAngle;
 		Vector3 firstPoint = lightSource.transform.position; //might get rid of this Vector3, just get it from lineRenderer
-		//Vector3 lastPoint = lightSource.transform.position + beamDir * beamLength;
 		float cutoffDist = beamLength;
 
 		// check collisions with all obstacles
@@ -34,6 +37,8 @@ public class LightBehavior : MonoBehaviour {
 		List<float> distList = new List<float> ();
 		for (int i = 0; i < Obstacle.obstacleList.Count; i++) 
 		{
+			if (Obstacle.obstacleList [i] == this)
+				continue;
 			Vector3 obsVec = Obstacle.obstacleList [i].transform.position - firstPoint;
 			float dotProduct = Vector3.Dot (obsVec, beamDir);
 			if (dotProduct > 0) 
@@ -54,35 +59,13 @@ public class LightBehavior : MonoBehaviour {
 			}
 		}
 
-		/*Obstacle closestCollision = null;
-		float closestDist = beamLength;
-		for (int i = 0; i < collisionList.Count; i++) 
-		{
-			if (distList [i] < closestDist) 
-			{
-				closestCollision = collisionList [i];
-				closestDist = distList [i];
-			}
-		}
-
-		if (closestCollision) 
-		{
-			// perform hit calcs
-			lastPoint = lightSource.transform.position + beamDir * closestDist;
-			closestCollision.HitByLight (firstPoint);
-		}*/
-
 		for (int i = 0; i < collisionList.Count; i++) 
 		{
 			if (distList [i] <= cutoffDist) 
 			{
-				collisionList[i].HitByLight (firstPoint);
+				collisionList[i].HitByLight (firstPoint, lightSource.transform.position + beamDir * cutoffDist);
 			}
 		}
-
-		//lastPoint = lightSource.transform.position + beamDir * cutoffDist;
-		//lightBeam.SetPosition (0, firstPoint);
-		//lightBeam.SetPosition (1, lastPoint);
 
 		Vector3[] beamPositions = new Vector3[30];
 		for (int i = 0; i < beamPositions.Length; i++) {
@@ -90,5 +73,11 @@ public class LightBehavior : MonoBehaviour {
 		}
 		lightBeam.positionCount = beamPositions.Length;
 		lightBeam.SetPositions (beamPositions);
+
+		if (partSys) {
+			partSys.transform.position = lightSource.transform.position + beamDir * cutoffDist / 2f;
+			ParticleSystem.ShapeModule shapeMod = partSys.shape;
+			shapeMod.scale = new Vector3 (cutoffDist / 2f, 1f, beamWidth / 2f);
+		}
 	}
 }
